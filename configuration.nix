@@ -36,7 +36,7 @@
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
-    keyMap = "us";
+    keyMap = "la-latin1";
     #useXkbConfig = true; # use xkb.options in tty.
   };
 
@@ -97,14 +97,19 @@
     ];
   };
 
+  # Allow unfree packages (needed for ZeroTier)
+  nixpkgs.config.allowUnfree = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     neovim
-     k3s
-     cifs-utils
-     nfs-utils
-     git
+    vim
+    neovim
+    k3s
+    cifs-utils
+    nfs-utils
+    git
+    zerotierone
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
