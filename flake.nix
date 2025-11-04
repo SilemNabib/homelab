@@ -19,9 +19,12 @@
 
     # Flake Parts - Helper library for sort Nix flakes
     flake-parts.url = "github:hercules-ci/flake-parts";
+
+    # SOPS Nix - Nix integration for Mozilla SOPS (Secrets OPerationS)
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
-  outputs = inputs@{ self, nixpkgs, disko, flake-parts, ... }:
+  outputs = inputs@{ self, nixpkgs, disko, flake-parts, sops-nix, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
 
       # Define supported systems
@@ -46,6 +49,7 @@
             
             modules = [
               disko.nixosModules.disko
+              sops-nix.nixosModule.sops
               ./nixos/hosts/${name}/hardware-configuration.nix
               ./nixos/hosts/${name}/disko.nix
               ./nixos/hosts/${name}/configuration.nix
