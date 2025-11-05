@@ -27,33 +27,6 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  sops = {
-    defaultSopsFile = ./secrets/general-secrets.yaml;
-    age.keyFile = "/var/lib/sops-nix/key.txt";
-    
-    secrets.k3s-token = {
-      sopsFile = ./secrets/k3s-token.yaml;
-      key = "token";
-      path = "/run/secrets/k3s-token"; # Path where the secret will be stored in the filesystem (default is in /run/secrets/)
-    };
-
-    secrets.operatorPassword = {
-      sopsFile = ./secrets/operator-password.yaml;
-      key = "operatorPassword";
-      path = "/run/secrets/operator-password";
-    };
-  };
-
-  # Default User
-  users.users.operator = {
-    isNormalUser = true;
-    description = "Homelab Operator";
-    extraGroups = [ "wheel" "networkmanager" ];
-    shell = pkgs.zsh;
-    hashedPasswordFile = config.sops.secrets.operatorPassword.path;
-    openssh.authorizedKeys.keyFiles = [ ./keys/beacon-admin.pub ];
-  };
-  
   # Install essential packages system-wide
   environment.systemPackages = with pkgs; [
     vim

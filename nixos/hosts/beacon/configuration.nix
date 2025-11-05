@@ -5,10 +5,13 @@
 { config, lib, pkgs, meta, ... }:
 
 {
-  imports =
-    [ 
-      # Include the results of the hardware scan.
-    ];
+  imports = [
+    # Módulos modulares
+    ../../modules/secrets.nix
+    ../../modules/users.nix
+    ../../modules/k3s.nix
+    ../../modules/home-manager.nix
+  ];
 
   networking.hostName = meta.hostname;
 
@@ -18,31 +21,13 @@
   ];
   virtualisation.docker.logDriver = "json-file";
 
-  services.k3s = {
-    enable = true;
-    role = "server";
-    tokenFile = config.sops.secrets.k3s-token.path;
-    extraFlags = toString ([
-	    "--write-kubeconfig-mode \"0644\""
-	    "--cluster-init"
-	    "--disable servicelb"
-	    "--disable traefik"
-	    "--disable local-storage"
-    ] ++ (if meta.hostname == "beacon-0" then [] else [
-	      "--server https://beacon-0:6443"
-    ]));
-    clusterInit = (meta.hostname == "beacon-0");
-  };
-
   services.openiscsi = {
     enable = true;
     name = "iqn.2016-04.com.open-iscsi:${meta.hostname}";
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # Paquetes específicos para hosts beacon
   environment.systemPackages = with pkgs; [
-    k3s
     cifs-utils
     nfs-utils
   ];
